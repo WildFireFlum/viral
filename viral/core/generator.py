@@ -1,18 +1,6 @@
-import abc
-from abc import ABC
-from dataclasses import dataclass
-from typing import Any
+from abc import ABC, abstractmethod
 
-
-@dataclass(frozen=True)
-class Statement:
-    data: str
-
-
-@dataclass(frozen=True)
-class Variable:
-    name: str
-    value: Any
+from viral.core.structs import Variable, Statement
 
 
 class Generator(ABC):
@@ -21,7 +9,7 @@ class Generator(ABC):
            support more types (for typed languages)
     """
 
-    @abc.abstractmethod
+    @abstractmethod
     def assignment(self, var: Variable) -> Statement:
         # `x = 3` ==> `int x = 3`
         pass

@@ -3,41 +3,45 @@ from pathlib import Path
 
 from pytest import fixture
 
-from viral.core.distributor import Distributor, Template
-from viral.core.generator import Statement
+from viral.core.distributor import Distributor
+from viral.core.structs import Statement, Template
 
 
 @fixture
-def statement():
+def target() -> Path:
+    return Path(__file__).parent / 'example_file'
+
+
+@fixture
+def statement() -> Statement:
     return Statement(data='watwat = wat wat wat')
 
 
 @fixture
-def template():
+def template() -> Template:
     return Template(header='header', footer='footer', indentation='indentation')
 
 
 @fixture
-def distributor(statement: Statement, template: Template) -> Distributor:
-    output_file = Path(__file__).parent / 'example_file'
+def distributor(target: Path, statement: Statement, template: Template) -> Distributor:
     dist = Distributor()
-    dist.add_statement(output_file, statement)
-    dist.add_template(output_file, template)
+    dist.append_statement(target, statement)
+    dist.set_template(target, template)
     yield dist
-    output_file.unlink(missing_ok=True)
+    target.unlink(missing_ok=True)
 
 
 class TestDistributor:
 
-    def test_example_valid_distribution(self, distributor: Distributor, statement: Statement, template: Template):
-        assert any((statement in s) for s in distributor.statements.values())
-        assert template in distributor.templates.values()
+    def test_example_valid_distribution(self, target: Path, distributor: Distributor, statement: Statement,
+                                        template: Template):
+        assert target in distributor.targets
+        assert statement in distributor.get_statements(target)
+        assert distributor.get_template(target) == template
 
-        config_files = distributor.statements.keys()
         distributor.distribute()
 
-        assert config_files
-        for path in config_files:
+        for path in distributor.targets:
             assert path.exists()
             assert path.stat().st_size > 0
 
