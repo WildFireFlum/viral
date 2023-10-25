@@ -20,11 +20,11 @@ class Distributor:
     def get_template(self, target: Path) -> Template:
         return self._templates.get(target, self._templates.default_factory())
 
-    def set_template(self, path: Path, template: Template) -> None:
-        self._templates[path] = template
+    def set_template(self, target: Path, template: Template) -> None:
+        self._templates[target] = template
 
-    def append_statement(self, path: Path, statement: Statement) -> None:
-        self._statements[path].append(statement)
+    def append_statement(self, target: Path, statement: Statement) -> None:
+        self._statements[target].append(statement)
 
     # TODO in a million years - distribute using multiprocessing
     def distribute(self) -> None:

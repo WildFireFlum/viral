@@ -9,7 +9,9 @@ from viral.core.structs import Statement, Template
 
 @fixture
 def target() -> Path:
-    return Path(__file__).parent / 'example_file'
+    path = Path(__file__).parent / 'example_file'
+    yield path
+    path.unlink(missing_ok=True)
 
 
 @fixture
@@ -27,8 +29,7 @@ def distributor(target: Path, statement: Statement, template: Template) -> Distr
     dist = Distributor()
     dist.append_statement(target, statement)
     dist.set_template(target, template)
-    yield dist
-    target.unlink(missing_ok=True)
+    return dist
 
 
 class TestDistributor:
