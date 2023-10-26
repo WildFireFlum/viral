@@ -8,5 +8,5 @@ class PluginCppGenerator(Generator):
 
 
 class CppHeaderTemplate(Template):
-    def __int__(self):
-        super().__init__(self, header='#pragma once\n')
+    def __init__(self):
+        super().__init__(header='#pragma once\n')

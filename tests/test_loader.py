@@ -34,10 +34,11 @@ def pkg() -> ModuleType:
 
     text = f"""
 from viral.core.generator import Generator
-from viral.core.structs import Template
+from viral.core.structs import Template, Variable, Statement
 
 class {TEST_GENERATOR}(Generator):
-    pass
+    def assignment(self, var: Variable) -> Statement:
+        pass
 
 class {TEST_TEMPLATE}(Template):
     pass
@@ -51,13 +52,13 @@ class {TEST_TEMPLATE}(Template):
 class TestLoader:
     def test_static_imports(self):
         loader = Loader()
-        assert loader.templates[CppHeaderTemplate.__name__] == CppHeaderTemplate
-        assert loader.generators[PluginCppGenerator.__name__] == PluginCppGenerator
+        assert isinstance(loader.templates[CppHeaderTemplate.__name__], CppHeaderTemplate)
+        assert isinstance(loader.generators[PluginCppGenerator.__name__], PluginCppGenerator)
 
     def test_local_impl(self):
         loader = Loader()
-        assert loader.templates[LocalTemplate.__name__] == LocalTemplate
-        assert loader.generators[LocalGenerator.__name__] == LocalGenerator
+        assert isinstance(loader.templates[LocalTemplate.__name__], LocalTemplate)
+        assert isinstance(loader.generators[LocalGenerator.__name__], LocalGenerator)
 
     def test_load(self, pkg: ModuleType):
         loader = Loader()
